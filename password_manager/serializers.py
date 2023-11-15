@@ -6,4 +6,4 @@ from password_manager.models import ServicePassword
 class ServicePasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = ServicePassword
-        fields = '__all__'
+        fields = ('password', 'service_name')
