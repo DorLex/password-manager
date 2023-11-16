@@ -6,7 +6,7 @@
 git clone https://github.com/DorLex/password-manager.git
 ```
 
-#### 2. Создать файл `.env` (как в примере `.env.example`).
+#### 2. Перейдя в корневую папку проекта, создать файл `.env` (как в примере `.env.example`).
 
 - *Если хотим другой ключ шифрования `CRYPTOGRAPHY_KEY`, можно сгенерировать с помощью:*
 
