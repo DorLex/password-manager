@@ -2,7 +2,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from encryption.decrypt import get_decrypt_data
+from encryption.decrypt import get_decrypt_data, get_many_decrypt_data
 from encryption.encrypt import get_encrypt_data
 from .models import ServicePassword
 from .serializers import ServicePasswordSerializer
@@ -45,4 +45,6 @@ class ServicePasswordILikeAPIView(APIView):
         services = get_services_ilike_service_name(service_name)
         serializer = ServicePasswordSerializer(services, many=True)
 
-        return Response(serializer.data)
+        response_data = get_many_decrypt_data(serializer.data)
+
+        return Response(response_data)

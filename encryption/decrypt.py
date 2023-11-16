@@ -11,3 +11,11 @@ def get_decrypt_data(data):
     data['password'] = get_decrypt_password(password)
 
     return data
+
+
+def get_many_decrypt_data(many_data):
+    for data in many_data:
+        password = data.get('password')
+        data['password'] = get_decrypt_password(password)
+
+    return many_data
