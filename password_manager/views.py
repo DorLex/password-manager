@@ -20,15 +20,15 @@ class ServicePasswordAPIView(APIView):
         return Response(response_data)
 
     def post(self, request, service_name):
-        data = get_encrypt_data(request.data)
+        encrypt_data = get_encrypt_data(request.data)
 
         service = get_service_by_service_name(service_name)
 
         if service:
-            serializer = ServicePasswordSerializer(service, data, partial=True)
+            serializer = ServicePasswordSerializer(service, encrypt_data, partial=True)
         else:
-            data['service_name'] = service_name
-            serializer = ServicePasswordSerializer(data=data)
+            encrypt_data['service_name'] = service_name
+            serializer = ServicePasswordSerializer(data=encrypt_data)
 
         serializer.is_valid(raise_exception=True)
         serializer.save()

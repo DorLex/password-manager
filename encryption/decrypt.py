@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from .create_crypto import fernet
 
 
@@ -7,15 +9,18 @@ def get_decrypt_password(password):
 
 
 def get_decrypt_data(data):
+    decrypt_data = data.copy()
     password = data.get('password')
-    data['password'] = get_decrypt_password(password)
+    decrypt_data['password'] = get_decrypt_password(password)
 
-    return data
+    return decrypt_data
 
 
 def get_many_decrypt_data(many_data):
-    for data in many_data:
+    many_decrypt_data = deepcopy(many_data)
+
+    for data in many_decrypt_data:
         password = data.get('password')
         data['password'] = get_decrypt_password(password)
 
-    return many_data
+    return many_decrypt_data
