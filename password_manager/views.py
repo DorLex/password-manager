@@ -15,9 +15,9 @@ class ServicePasswordAPIView(APIView):
         service = get_object_or_404(ServicePassword, service_name=service_name)
         serializer = ServicePasswordSerializer(service)
 
-        response_data = get_decrypt_data(serializer.data)
+        decrypt_response_data = get_decrypt_data(serializer.data)
 
-        return Response(response_data)
+        return Response(decrypt_response_data)
 
     def post(self, request, service_name):
         encrypt_data = get_encrypt_data(request.data)
@@ -33,9 +33,9 @@ class ServicePasswordAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        response_data = get_decrypt_data(serializer.data)
+        decrypt_response_data = get_decrypt_data(serializer.data)
 
-        return Response(response_data)
+        return Response(decrypt_response_data)
 
 
 class ServicePasswordILikeAPIView(APIView):
@@ -45,6 +45,6 @@ class ServicePasswordILikeAPIView(APIView):
         services = get_services_ilike_service_name(service_name)
         serializer = ServicePasswordSerializer(services, many=True)
 
-        response_data = get_many_decrypt_data(serializer.data)
+        decrypt_response_data = get_many_decrypt_data(serializer.data)
 
-        return Response(response_data)
+        return Response(decrypt_response_data)
