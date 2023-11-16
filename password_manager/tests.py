@@ -43,3 +43,10 @@ class TestMy(APITestCase):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(expected_data, decrypt_response_data)
+
+    def test_get_password_ilike_service_name(self):
+        url = reverse('password_ilike_service_name') + '?service_name=serv'
+        response = self.client.get(url)
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual([self.decrypt_data], response.data)
