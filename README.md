@@ -38,8 +38,6 @@ docker compose up
 
 #### 6. Если хотим прогнать тесты:
 
-*(также в другой вкладке терминала при запущенном docker compose)*
-
 ```bash
 docker compose run --rm app python manage.py test
 ```
