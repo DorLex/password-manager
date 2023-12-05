@@ -8,7 +8,8 @@ def get_encrypt_password(password):
 
 
 def get_encrypt_data(data):
-    encrypt_data = data.copy()  # Делаем копию, т. к. QueryDict из request.data неизменяемый
+    encrypt_data = data.copy()  # Чтобы получить изменяемый объект, необходимо использовать QueryDict.copy()
+
     password = data.get('password')
     encrypt_data['password'] = get_encrypt_password(password)
 
