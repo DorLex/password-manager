@@ -22,22 +22,37 @@ class ServicePasswordAPIView(APIView):
         return Response(decrypt_response_data)
 
     def post(self, request, service_name):
-        """Создаём пароль/заменяем существующий пароль"""
-
-        # Обычно изменение записей производится через PUT или PATCH.
-        # Но создание и изменение через POST было в условиях тестового задания.
+        """Создаём пароль"""
 
         # Используем шифрование, а не хеширование, что бы возвращать пароль клиенту в исходном виде.
         # Т. к. шифрование работает в обе стороны, а хеширование - только в одну.
+
         encrypt_data = get_encrypt_data(request.data)
 
         service = get_service_by_service_name(service_name)
 
         if service:
-            serializer = ServicePasswordSerializer(service, encrypt_data, partial=True)
+            return Response({'mess': 'service уже есть'})
+
         else:
             encrypt_data['service_name'] = service_name
             serializer = ServicePasswordSerializer(data=encrypt_data)
+
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+
+            decrypt_response_data = get_decrypt_data(serializer.data)
+
+            return Response(decrypt_response_data)
+
+    def patch(self, request, service_name):
+        """Заменяем существующий пароль"""
+
+        encrypt_data = get_encrypt_data(request.data)
+
+        service = get_object_or_404(ServicePassword, service_name=service_name)
+
+        serializer = ServicePasswordSerializer(service, encrypt_data, partial=True)
 
         serializer.is_valid(raise_exception=True)
         serializer.save()
