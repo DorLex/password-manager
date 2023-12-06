@@ -129,3 +129,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CRYPTOGRAPHY_KEY = config('CRYPTOGRAPHY_KEY')
+
+REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'password_manager.utils.custom_exception_handler'
+}
