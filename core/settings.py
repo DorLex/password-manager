@@ -131,5 +131,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRYPTOGRAPHY_KEY = config('CRYPTOGRAPHY_KEY')
 
 REST_FRAMEWORK = {
-    'EXCEPTION_HANDLER': 'password_manager.utils.custom_exception_handler'
+    'EXCEPTION_HANDLER': 'utils.exception_handler.custom_exception_handler'
 }
