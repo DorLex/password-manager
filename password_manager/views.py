@@ -9,6 +9,7 @@ from encryption.encrypt import get_encrypt_data
 from .models import ServicePassword
 from .serializers import ServicePasswordSerializer
 from .services import check_service_exists, get_services_ilike_service_name
+from .validators import validate_get_parameters
 
 
 class ServicePasswordAPIView(APIView):
@@ -67,6 +68,9 @@ class ServicePasswordILikeAPIView(APIView):
         """Поиск по фрагменту service name"""
 
         service_name = request.GET.get('service_name')
+
+        validate_get_parameters(service_name)
+
         services = get_services_ilike_service_name(service_name)
         serializer = ServicePasswordSerializer(services, many=True)
 
