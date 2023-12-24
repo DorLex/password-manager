@@ -1,5 +1,3 @@
-from copy import deepcopy
-
 from .create_crypto import fernet
 
 

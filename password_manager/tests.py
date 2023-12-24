@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework.reverse import reverse
@@ -7,11 +8,18 @@ from encryption.encrypt import get_encrypt_data
 from password_manager.models import ServicePassword
 from password_manager.serializers import ServicePasswordSerializer
 
+User = get_user_model()
+
 
 class TestMy(APITestCase):
 
     @classmethod
     def setUpTestData(cls):
+        cls.user = User.objects.create_user(
+            username='user_1',
+            password='test1test1test1'
+        )
+
         cls.data = {
             'password': 'test1test1test1',
             'service_name': 'service_name_1'
@@ -20,6 +28,9 @@ class TestMy(APITestCase):
         cls.service = ServicePassword.objects.create(**cls.encrypt_data)
 
         cls.decrypt_data = get_decrypt_data(cls.encrypt_data)
+
+    def setUp(self):
+        self.client.force_authenticate(user=self.user)
 
     def test_get_password_by_service_name(self):
         url = reverse('password_by_service_name', args=['service_name_1'])
@@ -33,7 +44,7 @@ class TestMy(APITestCase):
         password = 'test2test2test2'
 
         url = reverse('password_by_service_name', args=[service_name])
-        response = self.client.post(url, data={'password': password})
+        response = self.client.post(url, data={'password': password}, format='json')
 
         service = ServicePassword.objects.get(service_name=service_name)
         serializer = ServicePasswordSerializer(service)
