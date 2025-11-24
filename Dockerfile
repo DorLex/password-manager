@@ -1,25 +1,16 @@
-FROM python:3.11.6-alpine3.18
+FROM python:3.12.12-slim-bookworm
 
-ENV PYTHONUNBUFFERED=1
-ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
 
-ENV PATH=/root/.local/bin:$PATH
-
-
-RUN apk --no-cache add curl
-
-RUN curl -sSL https://install.python-poetry.org | python3.11 -
-
-RUN poetry config virtualenvs.create false
-
+RUN python -m pip install -U pip &&  \
+    python -m pip install poetry && \
+    poetry config virtualenvs.create false
 
 WORKDIR /proj
 
 COPY poetry.lock pyproject.toml ./
 
-RUN poetry install
+RUN poetry install --no-root --without dev
 
-COPY . .
-
-
-EXPOSE 8000
+COPY ./ ./

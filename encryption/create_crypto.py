@@ -1,6 +1,7 @@
 from cryptography.fernet import Fernet
-from django.conf import settings
 
-key = settings.CRYPTOGRAPHY_KEY
+from core.envs import env_config
+
+key: str = env_config.cryptography_key
 
 fernet = Fernet(key)
