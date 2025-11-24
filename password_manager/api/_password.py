@@ -7,9 +7,9 @@ from rest_framework.views import APIView
 
 from encryption.decrypt import get_decrypt_data
 from encryption.encrypt import get_encrypt_data
+from password_manager._services import check_service_exists
 from password_manager.models import ServicePassword
 from password_manager.serializers import ServicePasswordSerializer
-from password_manager.services import check_service_exists
 
 
 class ServicePasswordAPIView(APIView):

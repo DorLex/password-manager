@@ -1,20 +1,31 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.utils.serializer_helpers import ReturnDict, ReturnList
 from rest_framework.viewsets import ViewSet
 
+from password_manager.services.password import PasswordService
 
-class ServicePasswordViewSet(ViewSet):
+
+class PasswordViewSet(ViewSet):
     permission_classes: tuple = (IsAuthenticated,)
 
-    def list(self, request: Request) -> Response[list]:
-        return Response([])
+    def list(self, _request: Request) -> Response[list]:
+        password_service: PasswordService = PasswordService()
+        passwords: ReturnList = password_service.get_passwords()
+        return Response(passwords)
 
     def create(self, request: Request) -> Response[dict]:
-        return Response({})
+        password_service: PasswordService = PasswordService()
+        password: ReturnDict = password_service.create_password(request.data)
+        return Response(password)
 
-    def retrieve(self, request: Request, service_name: str) -> Response[dict]:
-        return Response({})
+    def retrieve(self, _request: Request, service_name: str) -> Response[dict]:
+        password_service: PasswordService = PasswordService()
+        password: ReturnDict = password_service.get_password(service_name)
+        return Response(password)
 
     def update(self, request: Request, service_name: str) -> Response[dict]:
-        return Response({})
+        password_service: PasswordService = PasswordService()
+        password: ReturnDict = password_service.update_password(service_name, request.data)
+        return Response(password)
