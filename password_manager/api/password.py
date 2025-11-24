@@ -6,7 +6,11 @@ from rest_framework.response import Response
 from rest_framework.utils.serializer_helpers import ReturnDict
 from rest_framework.viewsets import ViewSet
 
-from password_manager.serializers.password import PasswordInputSerializer, PasswordUpdateSerializer
+from password_manager.serializers.password import (
+    PasswordCreateInputSerializer,
+    PasswordResponseSerializer,
+    PasswordUpdateSerializer,
+)
 from password_manager.services.password import PasswordService
 
 
@@ -14,7 +18,10 @@ from password_manager.services.password import PasswordService
 class PasswordViewSet(ViewSet):
     permission_classes: tuple = (IsAuthenticated,)
 
-    @extend_schema(request=PasswordInputSerializer)
+    @extend_schema(
+        request=PasswordCreateInputSerializer,
+        responses=PasswordResponseSerializer,
+    )
     def create(self, request: Request) -> Response[dict]:
         """Сохранить пароль для сервиса"""
 
@@ -22,11 +29,12 @@ class PasswordViewSet(ViewSet):
         password: ReturnDict = password_service.create_password(request.data)
         return Response(password, status=status.HTTP_201_CREATED)
 
+    @extend_schema(responses=PasswordResponseSerializer)
     def retrieve(self, _request: Request, service_name: str) -> Response[dict]:
         """Получить пароль по имени сервиса"""
 
         password_service: PasswordService = PasswordService()
-        password: ReturnDict = password_service.get_password(service_name)
+        password: ReturnDict = password_service.get_raw_password(service_name)
         return Response(password)
 
     @extend_schema(request=PasswordUpdateSerializer)

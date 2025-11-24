@@ -2,31 +2,38 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.utils.serializer_helpers import ReturnDict
 
 from core.crypto import fernet
-
 from password_manager.models import Password
-from password_manager.serializers.password import PasswordInputSerializer, PasswordSerializer, PasswordUpdateSerializer
+from password_manager.serializers.password import (
+    PasswordCreateInputSerializer,
+    PasswordResponseSerializer,
+    PasswordSaveSerializer,
+    PasswordUpdateSerializer,
+)
 
 
 class PasswordService:
-    def get_password(self, service_name: str) -> ReturnDict:
+    def get_raw_password(self, service_name: str) -> ReturnDict:
         password: Password = get_object_or_404(Password, service_name=service_name)
 
         password.password = self._decrypt_password(password.encrypted_password)
 
-        serializer: PasswordSerializer = PasswordSerializer(password)
+        serializer: PasswordResponseSerializer = PasswordResponseSerializer(password)
         return serializer.data
 
     def create_password(self, password_data: dict) -> ReturnDict:
-        PasswordInputSerializer(data=password_data).is_valid(raise_exception=True)
+        PasswordCreateInputSerializer(data=password_data).is_valid(raise_exception=True)
 
         password_data['encrypted_password'] = self._encrypt_password(password_data['password'])
-        del password_data['password']
 
-        serializer: PasswordSerializer = PasswordSerializer(data=password_data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+        save_serializer: PasswordSaveSerializer = PasswordSaveSerializer(data=password_data)
+        save_serializer.is_valid(raise_exception=True)
+        save_serializer.save()
 
-        return serializer.data
+        password: Password = save_serializer.instance
+        password.password = self._decrypt_password(password.encrypted_password)
+
+        response_serializer: PasswordResponseSerializer = PasswordResponseSerializer(password)
+        return response_serializer.data
 
     def update_password(self, service_name: str, password_data: dict) -> ReturnDict:
         PasswordUpdateSerializer(data=password_data).is_valid(raise_exception=True)
@@ -36,7 +43,7 @@ class PasswordService:
         password_data['encrypted_password'] = self._encrypt_password(password_data['password'])
         del password_data['password']
 
-        serializer: PasswordSerializer = PasswordSerializer(password, password_data, partial=True)
+        serializer: PasswordResponseSerializer = PasswordResponseSerializer(password, password_data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
