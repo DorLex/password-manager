@@ -6,10 +6,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from encryption.decrypt import get_decrypt_data
-from encryption.encrypt import get_encrypt_data
 from password_manager._services import check_service_exists
-from password_manager.models import ServicePassword
-from password_manager.serializers import ServicePasswordSerializer
+from password_manager.models import Password
+from password_manager.serializers.password import PasswordSerializer
 
 
 class ServicePasswordAPIView(APIView):
@@ -18,8 +17,8 @@ class ServicePasswordAPIView(APIView):
     def get(self, _request: Request, service_name: str) -> Response:
         """Получаем пароль по имени сервиса"""
 
-        service = get_object_or_404(ServicePassword, service_name=service_name)
-        serializer = ServicePasswordSerializer(service)
+        service = get_object_or_404(Password, service_name=service_name)
+        serializer = PasswordSerializer(service)
 
         decrypt_response_data = get_decrypt_data(serializer.data)
 
@@ -37,7 +36,7 @@ class ServicePasswordAPIView(APIView):
         encrypt_data = get_encrypt_data(request.data)
         encrypt_data['service_name'] = service_name
 
-        serializer = ServicePasswordSerializer(data=encrypt_data)
+        serializer = PasswordSerializer(data=encrypt_data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
@@ -50,9 +49,9 @@ class ServicePasswordAPIView(APIView):
 
         encrypt_data = get_encrypt_data(request.data)
 
-        service = get_object_or_404(ServicePassword, service_name=service_name)
+        service = get_object_or_404(Password, service_name=service_name)
 
-        serializer = ServicePasswordSerializer(service, encrypt_data, partial=True)
+        serializer = PasswordSerializer(service, encrypt_data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 

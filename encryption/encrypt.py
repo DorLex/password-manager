@@ -1,14 +1,8 @@
 from .create_crypto import fernet
 
 
-def get_encrypt_password(password):
-    """Дешифруем пароль"""
-    encrypt_password = fernet.encrypt(password.encode()).decode()
+def get_encrypted_password(password: str) -> str:
+    """Шифруем пароль"""
+
+    encrypt_password: str = fernet.encrypt(password.encode()).decode()
     return encrypt_password
-
-
-def get_encrypt_data(data):
-    password = data.get('password')
-    data['password'] = get_encrypt_password(password)
-
-    return data

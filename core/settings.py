@@ -130,13 +130,12 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK: dict = {
-    'EXCEPTION_HANDLER': 'utils.exception_handler.custom_exception_handler',
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 SPECTACULAR_SETTINGS: dict = {
-    'TITLE': 'Learning Platform',
-    'DESCRIPTION': 'Платформа для обучения',
+    'TITLE': 'Password Manager',
+    'DESCRIPTION': 'Менеджер паролей',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
     'COMPONENT_SPLIT_REQUEST': True,

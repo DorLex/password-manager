@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from encryption.decrypt import get_many_decrypt_data
-from password_manager.serializers import ServicePasswordSerializer
-from password_manager.services import get_services_ilike_service_name
+from password_manager._services import get_services_ilike_service_name
+from password_manager.serializers.password import PasswordSerializer
 from password_manager.validators import validate_get_parameters
 
 
@@ -20,7 +20,7 @@ class ServicePasswordILikeAPIView(APIView):
         validate_get_parameters(service_name)
 
         services = get_services_ilike_service_name(service_name)
-        serializer = ServicePasswordSerializer(services, many=True)
+        serializer = PasswordSerializer(services, many=True)
 
         decrypt_response_data = get_many_decrypt_data(serializer.data)
 
