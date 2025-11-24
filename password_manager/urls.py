@@ -1,6 +1,7 @@
 from django.urls import URLPattern, path
 
-from .views import ServicePasswordAPIView, ServicePasswordILikeAPIView
+from .api.password import ServicePasswordAPIView
+from .api.search import ServicePasswordILikeAPIView
 
 urlpatterns: list[URLPattern] = [
     path('password/<slug:service_name>', ServicePasswordAPIView.as_view(), name='password_by_service_name'),
