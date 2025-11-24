@@ -14,6 +14,10 @@ class PasswordInputSerializer(serializers.ModelSerializer):
         )
 
 
+class PasswordUpdateSerializer(serializers.Serializer):
+    password = serializers.CharField()
+
+
 class PasswordSerializer(serializers.ModelSerializer):
     encrypted_password = serializers.CharField(write_only=True)
     password = serializers.CharField(read_only=True)
