@@ -1,5 +1,8 @@
 from django.contrib import admin
 
-from .models import Password
+from password_manager.models import Password
 
-admin.site.register(Password)
+
+@admin.register(Password)
+class PasswordAdmin(admin.ModelAdmin):
+    pass

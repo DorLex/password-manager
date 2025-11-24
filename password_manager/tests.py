@@ -1,60 +1,68 @@
-# from django.contrib.auth import get_user_model
-# from rest_framework import status
-# from rest_framework.reverse import reverse
-# from rest_framework.test import APITestCase
-#
-# from password_manager.models import Password
-# from password_manager.serializers.password import PasswordResponseSerializer
-#
-# User = get_user_model()
-#
-#
-# class TestMy(APITestCase):
-#     @classmethod
-#     def setUpTestData(cls):
-#         cls.user = User.objects.create_user(
-#             username='user_1',
-#             password='test1test1test1',
-#         )
-#
-#         cls.data = {
-#             'password': 'test1test1test1',
-#             'service_name': 'service_name_1',
-#         }
-#         cls.encrypt_data = get_encrypt_data(cls.data)
-#         cls.service = Password.objects.create(**cls.encrypt_data)
-#
-#         cls.decrypt_data = get_decrypt_data(cls.encrypt_data)
-#
-#     def setUp(self):
-#         self.client.force_authenticate(user=self.user)
-#
-#     def test_get_password_by_service_name(self):
-#         url = reverse('password_by_service_name', args=['service_name_1'])
-#         response = self.client.get(url)
-#
-#         self.assertEqual(status.HTTP_200_OK, response.status_code)
-#         self.assertEqual(self.decrypt_data, response.data)
-#
-#     def test_add_password_by_service_name(self):
-#         service_name = 'service_name_2'
-#         password = 'test2test2test2'
-#
-#         url = reverse('password_by_service_name', args=[service_name])
-#         response = self.client.post(url, data={'password': password}, format='json')
-#
-#         service = Password.objects.get(service_name=service_name)
-#         serializer = PasswordResponseSerializer(service)
-#         decrypt_response_data = get_decrypt_data(serializer.data)
-#
-#         expected_data = {'password': password, 'service_name': service_name}
-#
-#         self.assertEqual(status.HTTP_200_OK, response.status_code)
-#         self.assertEqual(expected_data, decrypt_response_data)
-#
-#     def test_get_password_ilike_service_name(self):
-#         url = reverse('password_ilike_service_name') + '?service_name=serv'
-#         response = self.client.get(url)
-#
-#         self.assertEqual(status.HTTP_200_OK, response.status_code)
-#         self.assertEqual([self.decrypt_data], response.data)
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
+from rest_framework.test import APITestCase
+
+from password_manager.models import Password
+from password_manager.services.password import PasswordService
+
+User: type[User] = get_user_model()
+
+
+class TestPassword(APITestCase):
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.user: User = User.objects.create_user(
+            username='user_1',
+            password='password_user_1',
+        )
+
+        cls.service_name: str = 'service_name_1'
+        cls.password: str = 'password_service_1'
+        cls.encrypt_data: dict = {
+            'service_name': cls.service_name,
+            'encrypted_password': PasswordService()._encrypt_password(cls.password),
+        }
+        Password.objects.create(**cls.encrypt_data)
+
+    def setUp(self) -> None:
+        self.client.force_authenticate(user=self.user)
+
+    def test_get_password(self) -> None:
+        url: str = reverse('passwords-detail', args=[self.service_name])
+
+        response: Response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['service_name'], self.service_name)
+        self.assertEqual(response.data['password'], self.password)
+
+    def test_create_password(self) -> None:
+        service_name: str = 'service_name_2'
+        password: str = 'password_service_name_2'
+
+        url: str = reverse('passwords-list')
+        body: dict = {
+            'service_name': service_name,
+            'password': password,
+        }
+        response: Response = self.client.post(url, data=body)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['service_name'], service_name)
+
+    def test_update_password(self) -> None:
+        new_password: str = 'new_password_service_1'
+
+        url: str = reverse('passwords-detail', args=[self.service_name])
+        body: dict = {
+            'password': new_password,
+        }
+        response: Response = self.client.patch(url, data=body)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['service_name'], self.service_name)
+        password_obj: Password = Password.objects.get(service_name=self.service_name)
+        self.assertEqual(new_password, PasswordService()._decrypt_password(password_obj.encrypted_password))

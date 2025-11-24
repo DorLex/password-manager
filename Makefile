@@ -6,3 +6,6 @@ server:
 
 up:
 	docker compose up -d --build
+
+tests:
+	POSTGRES_HOST=localhost python manage.py test -v 2
