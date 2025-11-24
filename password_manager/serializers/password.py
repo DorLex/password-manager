@@ -14,11 +14,13 @@ class PasswordCreateInputSerializer(serializers.ModelSerializer):
         )
 
 
-class PasswordUpdateSerializer(serializers.Serializer):
+class PasswordUpdateInputSerializer(serializers.Serializer):
     password = serializers.CharField()
 
 
 class PasswordSaveSerializer(serializers.ModelSerializer):
+    encrypted_password = serializers.CharField(write_only=True)
+
     class Meta:
         model: type[Password] = Password
         fields: str | tuple = '__all__'

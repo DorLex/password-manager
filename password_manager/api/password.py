@@ -9,7 +9,8 @@ from rest_framework.viewsets import ViewSet
 from password_manager.serializers.password import (
     PasswordCreateInputSerializer,
     PasswordResponseSerializer,
-    PasswordUpdateSerializer,
+    PasswordSaveSerializer,
+    PasswordUpdateInputSerializer,
 )
 from password_manager.services.password import PasswordService
 
@@ -20,7 +21,7 @@ class PasswordViewSet(ViewSet):
 
     @extend_schema(
         request=PasswordCreateInputSerializer,
-        responses=PasswordResponseSerializer,
+        responses=PasswordSaveSerializer,
     )
     def create(self, request: Request) -> Response[dict]:
         """Сохранить пароль для сервиса"""
@@ -37,7 +38,10 @@ class PasswordViewSet(ViewSet):
         password: ReturnDict = password_service.get_raw_password(service_name)
         return Response(password)
 
-    @extend_schema(request=PasswordUpdateSerializer)
+    @extend_schema(
+        request=PasswordUpdateInputSerializer,
+        responses=PasswordSaveSerializer,
+    )
     def update(self, request: Request, service_name: str) -> Response[dict]:
         """Обновить пароль для сервиса"""
 

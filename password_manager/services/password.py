@@ -7,7 +7,7 @@ from password_manager.serializers.password import (
     PasswordCreateInputSerializer,
     PasswordResponseSerializer,
     PasswordSaveSerializer,
-    PasswordUpdateSerializer,
+    PasswordUpdateInputSerializer,
 )
 
 
@@ -28,31 +28,25 @@ class PasswordService:
         save_serializer: PasswordSaveSerializer = PasswordSaveSerializer(data=password_data)
         save_serializer.is_valid(raise_exception=True)
         save_serializer.save()
-
-        password: Password = save_serializer.instance
-        password.password = self._decrypt_password(password.encrypted_password)
-
-        response_serializer: PasswordResponseSerializer = PasswordResponseSerializer(password)
-        return response_serializer.data
+        return save_serializer.data
 
     def update_password(self, service_name: str, password_data: dict) -> ReturnDict:
-        PasswordUpdateSerializer(data=password_data).is_valid(raise_exception=True)
+        PasswordUpdateInputSerializer(data=password_data).is_valid(raise_exception=True)
 
         password: Password = get_object_or_404(Password, service_name=service_name)
 
         password_data['encrypted_password'] = self._encrypt_password(password_data['password'])
-        del password_data['password']
 
-        serializer: PasswordResponseSerializer = PasswordResponseSerializer(password, password_data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+        save_serializer: PasswordSaveSerializer = PasswordSaveSerializer(password, password_data, partial=True)
+        save_serializer.is_valid(raise_exception=True)
+        save_serializer.save()
 
-        return serializer.data
+        return save_serializer.data
 
     def _encrypt_password(self, password: str) -> str:
-        """Шифруем пароль"""
+        """Зашифровать пароль"""
         return fernet.encrypt(password.encode()).decode()
 
     def _decrypt_password(self, encrypted_password: str) -> str:
-        """Дешифруем пароль"""
+        """Дешифровать пароль"""
         return fernet.decrypt(encrypted_password.encode()).decode()
