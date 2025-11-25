@@ -35,9 +35,9 @@ class TestPassword(APITestCase):
 
         response: Response = self.client.get(url)
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['service_name'], self.service_name)
-        self.assertEqual(response.data['password'], self.password)
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data['service_name'] == self.service_name
+        assert response.data['password'] == self.password
 
     def test_create_password(self) -> None:
         service_name: str = 'service_name_2'
@@ -50,8 +50,8 @@ class TestPassword(APITestCase):
         }
         response: Response = self.client.post(url, data=body)
 
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data['service_name'], service_name)
+        assert response.status_code == status.HTTP_201_CREATED
+        assert response.data['service_name'] == service_name
 
     def test_update_password(self) -> None:
         new_password: str = 'new_password_service_1'
@@ -62,7 +62,7 @@ class TestPassword(APITestCase):
         }
         response: Response = self.client.patch(url, data=body)
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['service_name'], self.service_name)
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data['service_name'] == self.service_name
         password_obj: Password = Password.objects.get(service_name=self.service_name)
-        self.assertEqual(new_password, PasswordService()._decrypt_password(password_obj.encrypted_password))
+        assert new_password == PasswordService()._decrypt_password(password_obj.encrypted_password)

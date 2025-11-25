@@ -3,7 +3,7 @@ repos:
     hooks:
       - id: ruff
         name: ruff_linter
-        entry: ruff check --fix --show-fixes
+        entry: ruff check
         language: system # запускает ruff из активированного окружения
         types: [ python ]
 

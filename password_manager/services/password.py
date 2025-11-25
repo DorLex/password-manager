@@ -44,9 +44,9 @@ class PasswordService:
         return save_serializer.data
 
     def _encrypt_password(self, password: str) -> str:
-        """Зашифровать пароль"""
+        """Зашифровать пароль."""
         return fernet.encrypt(password.encode()).decode()
 
     def _decrypt_password(self, encrypted_password: str) -> str:
-        """Дешифровать пароль"""
+        """Дешифровать пароль."""
         return fernet.decrypt(encrypted_password.encode()).decode()
