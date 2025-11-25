@@ -38,20 +38,23 @@ show-fixes = true
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
-    "D100",
-    "SLF001",
-    "S101",
-    "S105",
-    "D102",
-    "S106",
+    "D100", # docstrings
     "D101",
-    "TC002",
-    "D106",
-    "D105",
+    "D102",
     "D104",
+    "D105",
+    "D106",
     "D203",
     "D212",
-    "D413"
+    "D413",
+    "SLF001", # obj._protected_member
+    "S101", # запрет использования assert
+    "S105",
+    "S106",
+    "TC002", # отдельный импорт для аттотаций
+    "PLC0415",
+    "TRY003",
+    "EM101"
 ]
 
 [tool.ruff.lint.flake8-quotes]
