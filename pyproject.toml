@@ -36,6 +36,7 @@ fix = true
 show-fixes = true
 
 [tool.ruff.lint]
+# preview = true  # включить дополнительные нестабильные правила
 select = ["ALL"]
 ignore = [
     "D100", # docstrings
@@ -59,6 +60,10 @@ ignore = [
 
 [tool.ruff.lint.flake8-quotes]
 inline-quotes = "single" # формат ковычек
+multiline-quotes = "single"
+
+#[tool.ruff.lint.flake8-annotations]
+#allow-star-arg-any = true  # разрешить Any для *args, **kwargs
 
 [tool.ruff.format]
 quote-style = "single" # формат ковычек
