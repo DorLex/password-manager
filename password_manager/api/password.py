@@ -26,14 +26,14 @@ class PasswordViewSet(ViewSet):
     def create(self, request: Request) -> Response[dict]:
         """Сохранить пароль для сервиса."""
         password_service: PasswordService = PasswordService()
-        password: ReturnDict = password_service.create_password(request.data)
+        password: ReturnDict = password_service.create_password(request.user, request.data)
         return Response(password, status=status.HTTP_201_CREATED)
 
     @extend_schema(responses=PasswordResponseSerializer)
-    def retrieve(self, _request: Request, service_name: str) -> Response[dict]:
+    def retrieve(self, request: Request, service_name: str) -> Response[dict]:
         """Получить пароль по имени сервиса."""
         password_service: PasswordService = PasswordService()
-        password: ReturnDict = password_service.get_raw_password(service_name)
+        password: ReturnDict = password_service.get_raw_password(request.user, service_name)
         return Response(password)
 
     @extend_schema(

@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from rest_framework.generics import get_object_or_404
 from rest_framework.utils.serializer_helpers import ReturnDict
 
@@ -12,17 +13,18 @@ from password_manager.serializers.password import (
 
 
 class PasswordService:
-    def get_raw_password(self, service_name: str) -> ReturnDict:
-        password: Password = get_object_or_404(Password, service_name=service_name)
+    def get_raw_password(self, user: User, service_name: str) -> ReturnDict:
+        password: Password = get_object_or_404(Password, user_id=user.pk, service_name=service_name)
 
         password.password = self._decrypt_password(password.encrypted_password)
 
         serializer: PasswordResponseSerializer = PasswordResponseSerializer(password)
         return serializer.data
 
-    def create_password(self, password_data: dict) -> ReturnDict:
+    def create_password(self, user: User, password_data: dict) -> ReturnDict:
         PasswordCreateInputSerializer(data=password_data).is_valid(raise_exception=True)
 
+        password_data['user'] = user.pk  # TODO: понять, можно ли удобнее
         password_data['encrypted_password'] = self._encrypt_password(password_data['password'])
 
         save_serializer: PasswordSaveSerializer = PasswordSaveSerializer(data=password_data)
@@ -31,6 +33,8 @@ class PasswordService:
         return save_serializer.data
 
     def update_password(self, service_name: str, password_data: dict) -> ReturnDict:
+        # TODO: добавить user
+
         PasswordUpdateInputSerializer(data=password_data).is_valid(raise_exception=True)
 
         password: Password = get_object_or_404(Password, service_name=service_name)
