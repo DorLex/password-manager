@@ -24,7 +24,7 @@ class PasswordService:
     def create_password(self, user: User, password_data: dict) -> ReturnDict:
         PasswordCreateInputSerializer(data=password_data).is_valid(raise_exception=True)
 
-        password_data['user'] = user.pk  # TODO: понять, можно ли удобнее
+        password_data['user'] = user.pk
         password_data['encrypted_password'] = self._encrypt_password(password_data['password'])
 
         save_serializer: PasswordSaveSerializer = PasswordSaveSerializer(data=password_data)

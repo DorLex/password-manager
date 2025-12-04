@@ -39,14 +39,14 @@
 
 1. Создать файл `.env` по примеру `example.env`.
 
-### ___:
+### ________________________________:
 
-- *Сгенерировать ключ шифрования `CRYPTOGRAPHY_KEY` можно с помощью:*
+- *Сгенерировать ключ шифрования `CRYPTOGRAPHY_KEY`:*
 
 ```python
 from cryptography.fernet import Fernet
 
-key = Fernet.generate_key()
+print(Fernet.generate_key().decode())
 ```
 
 ### 6. Тесты в докере:

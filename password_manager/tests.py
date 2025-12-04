@@ -58,9 +58,7 @@ class TestPassword(APITestCase):
         new_password: str = 'new_password_service_1'
 
         url: str = reverse('passwords-detail', args=[self.service_name])
-        body: dict = {
-            'password': new_password,
-        }
+        body: dict = {'password': new_password}
         response: Response = self.client.patch(url, data=body)
 
         assert response.status_code == status.HTTP_200_OK
