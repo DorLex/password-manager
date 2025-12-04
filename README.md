@@ -37,20 +37,15 @@
 
 ### Запуск:
 
-1. Создать файл `.env` по примеру `example.env`.
+1. Создать файл `.env` по примеру `example.env`.  
+   *Сгенерировать ключ шифрования `CRYPTOGRAPHY_KEY`:*
+    ```python
+    from cryptography.fernet import Fernet
+    
+    print(Fernet.generate_key().decode())
+    ```
 
-### ________________________________:
-
-- *Сгенерировать ключ шифрования `CRYPTOGRAPHY_KEY`:*
-
-```python
-from cryptography.fernet import Fernet
-
-print(Fernet.generate_key().decode())
-```
-
-### 6. Тесты в докере:
-
-```bash
-docker compose run --rm app python manage.py test
-```
+2. Основные команды запуска смотрите в `Makefile`:
+    ```shell
+    make up
+    ```

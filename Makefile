@@ -9,3 +9,6 @@ up:
 
 tests:
 	POSTGRES_HOST=localhost python manage.py test -v 2
+
+tests-in-docker:
+	docker compose run --rm backend python manage.py test -v 2
