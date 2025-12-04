@@ -43,5 +43,5 @@ class PasswordViewSet(ViewSet):
     def update(self, request: Request, service_name: str) -> Response[dict]:
         """Обновить пароль для сервиса."""
         password_service: PasswordService = PasswordService()
-        password: ReturnDict = password_service.update_password(service_name, request.data)
+        password: ReturnDict = password_service.update_password(request.user, service_name, request.data)
         return Response(password)

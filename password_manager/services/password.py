@@ -32,12 +32,10 @@ class PasswordService:
         save_serializer.save()
         return save_serializer.data
 
-    def update_password(self, service_name: str, password_data: dict) -> ReturnDict:
-        # TODO: добавить user
-
+    def update_password(self, user: User, service_name: str, password_data: dict) -> ReturnDict:
         PasswordUpdateInputSerializer(data=password_data).is_valid(raise_exception=True)
 
-        password: Password = get_object_or_404(Password, service_name=service_name)
+        password: Password = get_object_or_404(Password, user_id=user.pk, service_name=service_name)
 
         password_data['encrypted_password'] = self._encrypt_password(password_data['password'])
 
