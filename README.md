@@ -1,43 +1,51 @@
-## Тестовое задание "Менеджер паролей"
+## Тестовое задание "Менеджер паролей".
 
-### Запуск проекта:
+### Стек:
 
-#### 1. Клонировать репозиторий:
+- `Django REST Framework`
+- `pydantic-settings`
+- `PostgreSQL`
+- `cryptography`
+- `drf-spectacular`
+- `Docker`
 
-```bash
-git clone https://github.com/DorLex/password-manager.git
-```
+### Установка зависимостей:
 
-#### 2. Перейдя в корневую папку проекта, создать файл `.env` (как в примере `.env.example`).
+1. Создать окружение через `poetry`.
 
-- *Если хотим другой ключ шифрования `CRYPTOGRAPHY_KEY`, можно сгенерировать с помощью:*
+2. Установить только основные зависимости, необходимые для запуска:
+   ```shell
+   poetry install --no-root --without dev
+   ```
 
-```python
-from cryptography.fernet import Fernet
+3. Установить все зависимости, включая `dev`/`test` (+linter, +pre-commit и т.д.):
+    ```shell
+    poetry install --no-root
+    ```
 
-key = Fernet.generate_key()
-```
+### Pre-commit, Linter, Formatter:
 
-#### 3. Сбилдить через docker compose:
+- Установить `pre-commit` хуки:
+    ```shell
+    pre-commit install
+    ```
 
-```bash
-docker compose build
-```
+- Ручной запуск линтера и форматера:
+    ```shell
+    ruff check && ruff format
+    ```
 
-#### 4. Запустить:
+### Запуск:
 
-```bash
-docker compose up
-```
+1. Создать файл `.env` по примеру `example.env`.  
+   *Сгенерировать ключ шифрования `CRYPTOGRAPHY_KEY`:*
+    ```python
+    from cryptography.fernet import Fernet
+    
+    print(Fernet.generate_key().decode())
+    ```
 
-#### 5. Открыть еще одну вкладку терминала и произвести миграции:
-
-```bash
- docker compose run --rm app python manage.py migrate
-```
-
-#### 6. Если хотим прогнать тесты:
-
-```bash
-docker compose run --rm app python manage.py test
-```
+2. Основные команды запуска смотрите в `Makefile`:
+    ```shell
+    make up
+    ```

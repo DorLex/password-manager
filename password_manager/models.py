@@ -1,9 +1,20 @@
+from django.contrib.auth import get_user_model
+from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
 
+User: type[AbstractBaseUser] = get_user_model()
 
-class ServicePassword(models.Model):
-    service_name = models.CharField(max_length=255, unique=True, db_index=True)
-    password = models.TextField()
 
-    def __str__(self):
+class Password(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='passwords')
+    service_name = models.CharField(max_length=255)
+    encrypted_password = models.TextField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together: tuple = ('user', 'service_name')
+
+    def __str__(self) -> str:
         return self.service_name
